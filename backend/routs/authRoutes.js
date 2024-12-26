@@ -2,6 +2,8 @@ const express = require('express');
 
 const {register,login} = require('../controllers/authController');
 
+const { validateRegister } = require('../middlewares/validators');
+
 const router = express.Router();
 
 router.get('/register',(req,res)=>{
@@ -9,7 +11,7 @@ router.get('/register',(req,res)=>{
         title:'Registration'
     });
 });
-router.post('/register',register);
+router.post('/register', validateRegister, register);
 
 router.get('/',(req,res)=>{
     res.render('index',{

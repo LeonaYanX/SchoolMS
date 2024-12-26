@@ -23,7 +23,10 @@ app.set('views','views') // Настраиваю место где будет н
 
 
 //Connect to DB
-connectDB();
+connectDB().catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);                                    // Завершаем процесс при ошибке подключения
+});;
 
 // Routes
 app.use('/', authRoutes);

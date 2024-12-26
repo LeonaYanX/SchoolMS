@@ -1,6 +1,16 @@
 <div class="row">
     <form class="col s12" action="/register" method="POST" enctype="application/x-www-form-urlencoded">
         <div class="row">
+             
+                <input id="IsPassChangeAvailable" name="IsPassChangeAvailable" type="hidden" value="true" >
+                
+                <input id="IsBlocked" name="IsBlocked" type="hidden" value="false" >
+                
+             <!-- By default false -->
+                       
+                <input id="IsApproved" name="IsApproved" type="hidden" value="false" >
+                
+           
             <div class="input-field col s6">
                 <input id="firstName" name="firstName" type="text" class="validate" required>
                 <label for="firstName">First Name</label>

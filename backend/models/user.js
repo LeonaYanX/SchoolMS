@@ -25,6 +25,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    IsPassChangeAvailable: {
+        type: Boolean,
+        default: true,
+    },
+    IsBlocked: {
+        type: Boolean,
+        default: false,
+    },
+    IsApproved:{
+        type:Boolean,
+        default:false,
+    }
 });
 
 // Хешируем пароль перед сохранением
