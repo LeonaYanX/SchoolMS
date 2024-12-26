@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['student', 'teacher'],
+        enum: ['student', 'teacher','admin'], // проверить будет ли так работать
         required: true,
     },
     email: {
@@ -36,7 +36,11 @@ const userSchema = new mongoose.Schema({
     IsApproved:{
         type:Boolean,
         default:false,
+    },
+    blockExpiry: {
+        type:Date,    
     }
+   
 });
 
 // Хешируем пароль перед сохранением
@@ -49,6 +53,15 @@ userSchema.pre('save', async function (next) {
 // Сравнение пароля
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Проверка истечения срока блокировки
+userSchema.methods.checkAndUnblock = async function () {
+    if (this.IsBlocked && this.blockExpiry && new Date() > this.blockExpiry) { // Условие понять
+        this.IsBlocked = false;
+        this.blockExpiry = null;
+        await this.save();
+    }
 };
 
 module.exports = mongoose.model('User', userSchema);

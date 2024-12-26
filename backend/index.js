@@ -3,7 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const authRoutes = require('./routs/authRoutes');
-const expHbs = require('express-handlebars')
+const expHbs = require('express-handlebars');
+const adminRoutes = require('./routs/adminRoutes');
 
 const app = express();
 
@@ -30,6 +31,7 @@ connectDB().catch(err => {
 
 // Routes
 app.use('/', authRoutes);
+app.use('/admin',adminRoutes);
 
 //starting Server
 
