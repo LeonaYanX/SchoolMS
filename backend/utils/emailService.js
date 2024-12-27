@@ -1,13 +1,5 @@
-const nodemailer = require('nodemailer');
 
-// Конфигурация транспорта
-const transporter = nodemailer.createTransport({
-    service: 'Gmail', 
-    auth: {
-        user: process.env.EMAIL_USER, // My email
-        pass: process.env.EMAIL_PASS, // My pass
-    },
-});
+const transporter = require('../config/mail');
 
 // Функция для отправки письма
 const sendEmail = async (to, subject, text, html) => {

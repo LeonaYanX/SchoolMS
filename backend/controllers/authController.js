@@ -1,6 +1,7 @@
 const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const sendEmail = require('../utils/emailService'); // Подключение почтового модуля
+const sendEmail = require('../utils/emailService');// Подключение почтового модуля
+const jwtConfig = require('../config/jwt'); 
+const { generateToken} = require('../utils/token');
 
 exports.register = async (req, res) => {
     // Извлекаем данные из тела запроса
@@ -67,12 +68,16 @@ exports.login = async (req, res) => {
             }
         }
         
+          // Обновляем время последнего входа
+          user.lastLogin = new Date();
+          await user.save();
           
         // Генерируем JWT токен
-        const token = jwt.sign(
+        const token = generateToken(
             { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            
+             jwtConfig.expiresIn
+            
         );
 
         // Отправляем успешный ответ с токеном

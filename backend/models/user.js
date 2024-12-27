@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const cron = require('node-cron');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -12,7 +13,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['student', 'teacher','admin'], // проверить будет ли так работать
+        enum: ['student', 'teacher','admin'], 
         required: true,
     },
     email: {
@@ -29,6 +30,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    passwordLastChangedAt: { 
+        type: Date,
+        default: null
+    },
     IsBlocked: {
         type: Boolean,
         default: false,
@@ -39,8 +44,16 @@ const userSchema = new mongoose.Schema({
     },
     blockExpiry: {
         type:Date,    
-    }
-   
+    },
+    lastLogin: {
+         type: Date, 
+         default: null 
+    }, // Поле для записи времени последнего логина
+    duration: {
+         type: Number, 
+         default: 0 
+    } // Поле для записи длительности нахождения (в минутах)
+
 });
 
 // Хешируем пароль перед сохранением
@@ -57,11 +70,17 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 // Проверка истечения срока блокировки
 userSchema.methods.checkAndUnblock = async function () {
-    if (this.IsBlocked && this.blockExpiry && new Date() > this.blockExpiry) { // Условие понять
+    try {
+      if (this.IsBlocked && this.blockExpiry && new Date() > this.blockExpiry) {
         this.IsBlocked = false;
         this.blockExpiry = null;
         await this.save();
+        console.log(`User has been unblocked.`);
+      }
+    } catch (err) {
+      console.error('Error unblocking user:', err);
     }
-};
+  };
+
 
 module.exports = mongoose.model('User', userSchema);

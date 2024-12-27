@@ -5,6 +5,12 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routs/authRoutes');
 const expHbs = require('express-handlebars');
 const adminRoutes = require('./routs/adminRoutes');
+const userRoutes = require('./routs/userRoutes');
+const chatRoutes = require('./routs/chatRoutes');
+const errorHandler = require('./middlewares/errorHandler');
+
+
+const {schedulePasswordUpdate, scheduleUnblockUsers} = require('./utils/scheduler');
 
 const app = express();
 
@@ -32,6 +38,14 @@ connectDB().catch(err => {
 // Routes
 app.use('/', authRoutes);
 app.use('/admin',adminRoutes);
+app.use('/user', userRoutes);
+app.use('/chat',chatRoutes);
+app.use(errorHandler);
+
+// Starting shedules
+
+schedulePasswordUpdate();
+scheduleUnblockUsers();
 
 //starting Server
 
