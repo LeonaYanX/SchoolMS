@@ -1,5 +1,5 @@
 const express = require('express');
-const { verifyToken } = require('../middlewares/authMiddleware');
+const { verifyToken ,refreshToken} = require('../middlewares/authMiddleware');
 const { createUser, deleteUser, getAllUsers, updateUser, approveUser, blockUser, getUserStatistics, createGroup, addStudentsToGroup, addTeachersToGroup, notApprovedUserList } = require('../controllers/adminController');
 const { createSchedule, editSchedule, approveSchedule } = require('../controllers/scheduleController');
 const roleMiddleware = require('../middlewares/roleMiddleware');
@@ -7,7 +7,7 @@ const roleMiddleware = require('../middlewares/roleMiddleware');
 const router = express.Router();
 
 // Middleware
-router.use(verifyToken);
+router.use(verifyToken, refreshToken);
 router.use(roleMiddleware('admin'));
 
 // Пользователи

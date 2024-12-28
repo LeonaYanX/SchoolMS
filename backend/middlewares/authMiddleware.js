@@ -16,10 +16,10 @@ exports.verifyToken = (req,res,next)=>{
 };
 
 
-/* // Функция для обновления токена (если нужно продлить срок действия)
-const refreshToken = (token, newExpiresIn = '1h') => {
+// Функция для обновления токена (если нужно продлить срок действия)
+exports.refreshToken = (token, newExpiresIn = '1h') => {
     const payload = verifyToken(token); // Вытаскиваем данные из старого токена
     delete payload.iat; // Удаляем метаданные старого токена
     delete payload.exp;
     return generateToken(payload, newExpiresIn);
-};*/
+};

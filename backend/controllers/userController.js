@@ -2,6 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const Assignment = require('../models/assignment');
 const Group = require('../models/group');
+const { uploadFile } = require('../utils/cloud'); 
 
 exports.changePassword = async (req,res)=>{
     const {id , newPassword} = req.body;
@@ -42,23 +43,36 @@ exports.getAssignments = async (req, res) => {
     }
 };
 
-// Отправить задание
+// Отправка выполненного задания
 exports.submitAssignment = async (req, res) => {
     try {
-        const { assignmentId } = req.params;
-        const { fileUrl } = req.body;
-
-        const assignment = await Assignment.findById(assignmentId);
-        if (!assignment) return res.status(404).json({ message: 'Test is not found' });
-
-        assignment.submissions.push({
-            student: req.user._id,
-            fileUrl
-        });
-
-        await assignment.save();
-        res.status(200).json({ message: 'Sending success' });
+      const { assignmentId } = req.params;
+      const { file } = req.body; // Получаем файл из запроса
+  
+      if (!file) {
+        return res.status(400).json({ message: 'File is required' });
+      }
+  
+      const assignment = await Assignment.findById(assignmentId);
+      if (!assignment) {
+        return res.status(404).json({ message: 'Task is not found' });
+      }
+  
+      // Загрузка файла в облако
+      const fileUrl = await uploadFile(file);
+  
+      // Добавление записи в submissions
+      assignment.submissions.push({
+        student: req.user._id,
+        fileUrl,
+      });
+  
+      await assignment.save();
+  
+      res.status(200).json({ message: 'Test sending successfull', fileUrl });
     } catch (error) {
-        res.status(500).json({ message: 'Error sending the task', error });
+      res.status(500).json({ message: 'Error sending task', error });
     }
-};
+  };
+
+ 

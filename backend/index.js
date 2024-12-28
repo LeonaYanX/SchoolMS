@@ -6,6 +6,7 @@ const authRoutes = require('./routs/authRoutes');
 const expHbs = require('express-handlebars');
 const adminRoutes = require('./routs/adminRoutes');
 const userRoutes = require('./routs/userRoutes');
+const teacherRoutes = require('./routs/teacherRouts');
 const chatRoutes = require('./routs/chatRoutes');
 const errorHandler = require('./middlewares/errorHandler');
 
@@ -39,7 +40,7 @@ connectDB().catch(err => {
 app.use('/', authRoutes);
 app.use('/admin',adminRoutes);
 app.use('/user', userRoutes);
-app.use('/chat',chatRoutes);
+app.use('/teacher', teacherRoutes);
 app.use(errorHandler);
 
 // Starting shedules

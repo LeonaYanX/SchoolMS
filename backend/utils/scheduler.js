@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const User = require('../models/user');
 
 
-// Запуск планировщика для обновления поля
+// планировщик для обновления поля
 const schedulePasswordUpdate = () => {
   cron.schedule('0 0 * * *', async () => {
     console.log('Running password update job...');
@@ -29,7 +29,7 @@ const schedulePasswordUpdate = () => {
   });
 };
 
-// Планировщик для запуска checkAndUnblock для всех пользователей
+// Планировщик checkAndUnblock для всех пользователей
 const scheduleUnblockUsers = () => {
     cron.schedule('0 * * * *', async () => { // Запуск каждый час
       console.log('Running unblock task...');
