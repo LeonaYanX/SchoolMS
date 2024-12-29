@@ -31,3 +31,48 @@ exports.getUploadedFile = async (req, res) => {
         res.status(500).json({ error: 'Something went wrong.' });
     }
 };
+exports.createAssignment = async (req,res)=>{
+    try{
+    const {title, description, deadline, groupId}= req.body;
+    if(!title||!description||!deadline||!groupId){
+       return res.status(400).json({message:'Not all fields are entered'});
+    }
+    const teacherId = req.params.id;
+    const teacher = await User.findById(teacherId);
+    if(!teacher){
+      return  res.status(403).json({message : 'Cant reqognise you'});
+    }
+     const group = await Group.findById(groupId);
+     if(!group){
+       return res.status(404).json({message: 'Group is not found'});
+     }
+
+     const assignment = new Assignment({
+        title: title,
+        description: description,
+        deadline:deadline,
+        group:groupId,
+        teacher: teacherId
+     });
+
+     await assignment.save();
+     res.status(201).json({message:'Created successfully'}, assignment);
+
+    }catch(error){
+        res.status(500).json({error:'Error creating the task'});
+    }
+};
+
+exports.deleteAssignment = async (req,res)=>{
+    try{
+        const assignmentId = req.params.id;
+        const assignment = await Assignment.findByIdAndDelete(assignmentId);
+        if(!assignment){
+            return res.status(404).json({message:'Assignment is not found.'});
+        }
+        res.status(200).json({message:'Assignment deleted successfully.',
+            deletedAssignment: assignment});
+    }catch(error){
+        res.status(500).json({error:'Error during deleting process!'});
+    }
+};
