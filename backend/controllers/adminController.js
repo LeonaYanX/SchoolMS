@@ -224,7 +224,7 @@ exports.getUserStatistics = async (req, res) => {
                 role: user.role,
             },
             lastEnteringDate: user.lastEnteringDate || 'Never',
-            duration: user.duration || 'N/A', // Нужно уточнить логику подсчета
+            duration: user.duration || 'N/A', // Logic in logut in routes
         }));
 
         res.json({ statistics });
