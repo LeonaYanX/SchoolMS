@@ -76,3 +76,56 @@ exports.deleteAssignment = async (req,res)=>{
         res.status(500).json({error:'Error during deleting process!'});
     }
 };
+exports.gradeSubmission = async(req,res)=>{
+    const {assignmentId, studentId, grade, feedback} =req.body;
+    const teacherId = req.params.id;
+    try{
+        const assignment = await Assignment.findById(assignmentId);
+        if(!assignment){
+            return res.status(404).json({message:'Assignment not found'});
+        }
+        if(assignment.teacher.toString()!==teacherId.toString()){
+            return res.status(403).json({message:'You are not allowed to grade this assignment'});
+        }
+        const submission =assignment.submissions.find((sub)=>sub.student.toString()===studentId.toString());
+        if(!submission){
+            return res.status(404).json({ message: 'Submission not found for the student' });
+        }
+        submission.grade ={
+            value: grade,
+            feedback:feedback || '',
+            gradedAt: new Date()
+        }; 
+        assignment.save();
+        res.status(200).json({ message: 'Grade submitted successfully', submission });
+    } catch (error) {
+        console.error('Error grading submission:', error);
+        res.status(500).json({ message: 'Error grading submission', error });
+    }
+};
+
+
+exports.getJournal = async (req, res) => {
+    try {
+        const teacherId = req.user._id; // ID учителя из токена
+        const assignments = await Assignment.find({ teacher: teacherId })
+            .populate('group', 'name')
+            .populate('submissions.student', 'firstName lastName');
+
+        const journal = assignments.map((assignment) => ({
+            title: assignment.title,
+            group: assignment.group.name,
+            submissions: assignment.submissions.map((submission) => ({
+                student: `${submission.student.firstName} ${submission.student.lastName}`,
+                grade: submission.grade.value,  // ? || null todo
+                feedback: submission.grade.feedback,
+            })),
+        }));
+
+        res.status(200).json(journal);
+    } catch (error) {
+        console.error('Error getting journal:', error);
+        res.status(500).json({ message: 'Error getting journal', error });
+    }
+};
+

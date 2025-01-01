@@ -30,13 +30,21 @@ const assignmentSchema = new mongoose.Schema({
                 
                 type: String 
             
-            }, // Ссылка на файл в облаке
+            }, 
             submittedAt: {
                  type: Date,
                   default: Date.now 
-                } // Время сдачи
+                },
+                
+
+            grade: {
+                    value: { type: Number, min: 0, max: 100 }, 
+                    feedback: { type: String, default: '' }, 
+                    gradedAt: { type: Date }, 
+                }, 
         }
     ]
+    
 });
 
 module.exports = mongoose.model('Assignment', assignmentSchema);

@@ -75,4 +75,34 @@ exports.submitAssignment = async (req, res) => {
     }
   };
 
+  
+
+  exports.getJournal = async (req, res) => {
+    try {
+        const studentId = req.user._id; // ID студента из токена
+        const assignments = await Assignment.find({
+            'submissions.student': studentId,
+        }).populate('teacher', 'firstName lastName');
+
+        const journal = assignments.map((assignment) => {
+            const submission = assignment.submissions.find(
+                (sub) => sub.student.toString() === studentId.toString()
+            );
+
+            return {
+                title: assignment.title,
+                teacher: `${assignment.teacher.firstName} ${assignment.teacher.lastName}`,
+                grade: submission?.grade?.value || null,
+                feedback: submission?.grade?.feedback || '',
+            };
+        });
+
+        res.status(200).json(journal);
+    } catch (error) {
+        console.error('Error getting student journal:', error);
+        res.status(500).json({ message: 'Error getting student journal', error });
+    }
+};
+
+
  
