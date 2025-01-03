@@ -49,7 +49,7 @@ exports.updateUser = async (req, res) => {
 exports.approveUser = async (req, res) => {
     try {
         const { id } = req.params; //с клика йд в парамс
-        const user = await User.findByIdAndUpdate(id, { IsApproved: true }, { new: true });//узнать почему ню тру?
+        const user = await User.findByIdAndUpdate(id, { IsApproved: true }, { new: true });
         res.json({ message: 'User approved successfully', user });
     } catch (error) {
         res.status(400).json({ error: 'Failed to approve user', details: error.message });
@@ -136,7 +136,7 @@ exports.createSchedule = async (req, res) => {
 // 9. Редактировать расписание
 exports.editSchedule = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params; // сделать валидацию по боди если нужно как и верхнее спросить??
         const updatedSchedule = await Schedule.findByIdAndUpdate(id, req.body, { new: true });
         res.json({ message: 'Schedule updated successfully', updatedSchedule });
     } catch (error) {
@@ -159,7 +159,7 @@ exports.approveSchedule = async (req, res) => {
 // 11. Создать группу
 exports.createGroup = async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name } = req.body; // спросить каким форматом будут задаваться группы для валидации
         const group = new Group({ name });
         await group.save();
         res.status(201).json({ message: 'Group created successfully', group });

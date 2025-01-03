@@ -1,7 +1,7 @@
 
 const transporter = require('../config/mail');
 
-// Функция для отправки письма
+
 const sendEmail = async (to, subject, text, html) => {
     const mailOptions = {
         from: `"SchoolMS" <${process.env.EMAIL_USER}>`, // Адрес отправителя

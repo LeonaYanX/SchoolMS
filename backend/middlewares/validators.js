@@ -1,9 +1,12 @@
-exports.validateRegister = (req, res, next) => {
-    const { firstName, lastName, role, password, email } = req.body;
+const { validationResult } = require('express-validator');
 
-    if (!firstName || !lastName || !role || !password || !email) {
-        return res.status(400).json({ error: 'All fields are required.' });
+exports.validate = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
-
     next();
 };
+
+
+

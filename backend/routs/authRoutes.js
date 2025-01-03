@@ -2,13 +2,14 @@ const express = require('express');
 
 const {register,login} = require('../controllers/authController');
 
-const { validateRegister } = require('../middlewares/validators');
+const { validate } = require('../middlewares/validators');
+const {createUserRules} = require('../validators/userValidator');
 
 const router = express.Router();
 
 
 
-router.get('/register',(req,res)=>{
+router.get('/register',createUserRules,validate,(req,res)=>{
     res.render('register',{
         title:'Registration'
     });
