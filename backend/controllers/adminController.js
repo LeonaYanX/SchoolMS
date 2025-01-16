@@ -197,7 +197,7 @@ exports.addTeachersToGroup = async (req, res) => {
 
         const group = await Group.findById(groupId);
         if (!group) return res.status(404).json({ error: 'Group not found' });
-
+       
         const teachers = await User.find({ _id: { $in: teacherIds }, role: 'teacher' });
         if (teachers.length !== teacherIds.length) {
             return res.status(400).json({ error: 'Some teachers not found' });

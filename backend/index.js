@@ -7,7 +7,9 @@ const expHbs = require('express-handlebars');
 const adminRoutes = require('./routs/adminRoutes');
 const userRoutes = require('./routs/userRoutes');
 const teacherRoutes = require('./routs/teacherRouts');
-const chatRoutes = require('./routs/chatRoutes');
+
+const chatRoutes = require('./routs/chatRoutes'); // уточнить правда в фронте?
+
 const errorHandler = require('./middlewares/errorHandler');
 
 
@@ -25,7 +27,7 @@ const hbs = expHbs.create({ // настройка ХБС
 })
 app.engine('hbs',hbs.engine) // подключаем движок по ключу ХБС
 app.set('view engine', 'hbs')//Для того чтобы по дефолту использовать ХБС настройка имя должно 
-// совпадать с строчкой в апп.энджин - 'ХБс'
+// совпадать с строчкой в апп.энджин 
 app.set('views','views') // Настраиваю место где будет находиться вю нашего приложения по ключу views
 
 
