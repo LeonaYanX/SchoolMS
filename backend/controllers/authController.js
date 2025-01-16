@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const sendEmail = require('../utils/emailService');// Подключение почтового модуля
 const jwtConfig = require('../config/jwt'); 
-const { generateToken} = require('../utils/token');
+const { generateToken, generateTokens} = require('../utils/token');
 
 exports.register = async (req, res) => {
     
@@ -66,16 +66,16 @@ exports.login = async (req, res) => {
           user.lastLogin = new Date();
           await user.save();
           
-        
-        const token = generateToken(
+         const tokens = generateTokens(user._id);
+       /* const token = generateToken(
             { id: user._id, email: user.email },
             
              jwtConfig.expiresIn
             
-        );
+        );*/
 
         
-        res.json({ message: 'Login successful', token });
+        res.json({ message: 'Login successful', tokens });
     } catch (error) {
         res.status(500).json({ error: 'Login failed', details: error.message });
     }
