@@ -1,15 +1,14 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
-const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
-const authRoutes = require('./routs/authRoutes');
+const bodyParser = require('body-parser');
+const corsOptions = require('./config/cors');
 const expHbs = require('express-handlebars');
-const adminRoutes = require('./routs/adminRoutes');
 const userRoutes = require('./routs/userRoutes');
+const authRoutes = require('./routs/authRoutes');
+const adminRoutes = require('./routs/adminRoutes');
 const teacherRoutes = require('./routs/teacherRouts');
-
-const chatRoutes = require('./routs/chatRoutes'); // уточнить правда в фронте?
-
 const errorHandler = require('./middlewares/errorHandler');
 
 
@@ -20,6 +19,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+  
+  app.use(cors(corsOptions)); // для всего приложения
 
 const hbs = expHbs.create({ // настройка ХБС
     defaultLayout:'main',    // главный лейаут мейн
