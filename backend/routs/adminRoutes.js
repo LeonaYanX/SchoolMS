@@ -4,6 +4,8 @@ const { createUser, deleteUser, getAllUsers, updateUser, approveUser, blockUser,
 const { createSchedule, editSchedule, approveSchedule } = require('../controllers/scheduleController');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const { createUserRules } = require('../validators/userValidator');
+const {createScheduleRules} = require('../validators/sheduleValidator');
+const {createGroupRules} = require('../validators/groupValidator');
 const validate = require('../middlewares/validators');
 const router = express.Router();
 
@@ -24,13 +26,13 @@ router.patch('/users/:id/block', blockUser);
 router.get('/statistics', getUserStatistics);
 
 // Группы
-router.post('/groups', createGroup);
+router.post('/groups', createGroup , createGroupRules , validate );
 router.patch('/groups/:id/students', addStudentsToGroup);
 router.patch('/groups/:id/teachers', addTeachersToGroup);
 
 // Расписание
-router.post('/schedules', createSchedule);
-router.put('/schedules/:id', editSchedule);
+router.post('/schedules', createSchedule , createScheduleRules , validate); 
+router.put('/schedules/:id', editSchedule , createScheduleRules , validate);
 router.patch('/schedules/:id/approve', approveSchedule);
 
 module.exports = router;
