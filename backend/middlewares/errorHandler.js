@@ -1,27 +1,35 @@
-// errorHandler.js
-
 // Обработчик ошибок для централизованного логирования и отправки ответов
 const errorHandler = (err, req, res, next) => {
-    console.error(err.stack);  // Логируем стек ошибки для отладки
     
-    // Проверяем тип ошибки и на основе этого формируем ответ
-    if (err.name === 'ValidationError') {
-        // Ошибка валидации данных (например, валидация модели)
-        return res.status(400).json({ message: 'Validation Error', details: err.errors });
-    }
+        // Определяем статус ошибки (по умолчанию 500)
+        const status = err.status || 500;
+    
+        // Формат стандартизированного ответа
+        const errorResponse = {
+            status: status,
+            error: err.name || 'ServerError',
+            message: err.message || 'An internal server error occurred'
+        };
+    
+        // Логируем ошибку
+        console.error(`[ERROR] ${err.name}: ${err.message}`);
+    
+        // Проверяем типы ошибок и уточняем ответ
+        if (err.name === 'ValidationError') {
+            errorResponse.status = 400;
+            errorResponse.message = 'Validation failed for the provided input.';
+        } else if (err.name === 'MongoError' && err.code === 11000) {
+            errorResponse.status = 400;
+            errorResponse.message = 'Duplicate key error: Unique field value already exists.';
+        } else if (err.name === 'JsonWebTokenError') {
+            errorResponse.status = 401;
+            errorResponse.message = 'Invalid or expired token.';
+        }
+    
+        // Отправляем стандартизированный ответ
+        res.status(errorResponse.status).json(errorResponse);
+    };
+    
+    module.exports = errorHandler;
 
-    if (err.name === 'MongoError' && err.code === 11000) {
-        // Ошибка при уникальности данных (например, дублирование email)
-        return res.status(400).json({ message: 'Duplicate Key Error', details: err.keyValue });
-    }
 
-    if (err.name === 'JsonWebTokenError') {
-        // Ошибка JWT, если токен недействителен
-        return res.status(401).json({ message: 'Invalid Token' });
-    }
-
-    // Если ошибка не была обработана выше, отправляем стандартный ответ
-    res.status(500).json({ message: 'Something went wrong!', details: err.message });
-};
-
-module.exports = errorHandler;

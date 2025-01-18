@@ -2,7 +2,7 @@ const Assignment = require('../models/assignment');
 const User = require('../models/user');
 const Group = require('../models/group');
 
-exports.getUploadedFile = async (req, res) => {
+exports.getUploadedFile = async (req, res, next) => {
     const teacherId = req.params.teacherId; // Учитель ID из параметров запроса
 
     try {
@@ -28,10 +28,11 @@ exports.getUploadedFile = async (req, res) => {
         res.status(200).json(submissions);
     } catch (error) {
         console.error('Error getting uploaded files:', error);
-        res.status(500).json({ error: 'Something went wrong.' });
+        next(error);
+       // res.status(500).json({ error: 'Something went wrong.' });
     }
 };
-exports.createAssignment = async (req,res)=>{
+exports.createAssignment = async (req,res,next)=>{
     try{
     const {title, description, deadline, groupId}= req.body;
     if(!title||!description||!deadline||!groupId){
@@ -59,11 +60,12 @@ exports.createAssignment = async (req,res)=>{
      res.status(201).json({message:'Created successfully'}, assignment);
 
     }catch(error){
-        res.status(500).json({error:'Error creating the task'});
+       next(error);
+        // res.status(500).json({error:'Error creating the task'});
     }
 };
 
-exports.deleteAssignment = async (req,res)=>{
+exports.deleteAssignment = async (req,res,next)=>{
     try{
         const assignmentId = req.params.id;
         const assignment = await Assignment.findByIdAndDelete(assignmentId);
@@ -73,10 +75,11 @@ exports.deleteAssignment = async (req,res)=>{
         res.status(200).json({message:'Assignment deleted successfully.',
             deletedAssignment: assignment});
     }catch(error){
-        res.status(500).json({error:'Error during deleting process!'});
+        next(error);
+        //res.status(500).json({error:'Error during deleting process!'});
     }
 };
-exports.gradeSubmission = async(req,res)=>{
+exports.gradeSubmission = async(req,res,next)=>{
     const {assignmentId, studentId, grade, feedback} =req.body;
     const teacherId = req.params.id;
     try{
@@ -100,12 +103,13 @@ exports.gradeSubmission = async(req,res)=>{
         res.status(200).json({ message: 'Grade submitted successfully', submission });
     } catch (error) {
         console.error('Error grading submission:', error);
-        res.status(500).json({ message: 'Error grading submission', error });
+       next(error);
+        // res.status(500).json({ message: 'Error grading submission', error });
     }
 };
 
 
-exports.getJournal = async (req, res) => {
+exports.getJournal = async (req, res , next) => {
     try {
         const teacherId = req.user._id; // ID учителя из токена
         const assignments = await Assignment.find({ teacher: teacherId })
@@ -125,7 +129,8 @@ exports.getJournal = async (req, res) => {
         res.status(200).json(journal);
     } catch (error) {
         console.error('Error getting journal:', error);
-        res.status(500).json({ message: 'Error getting journal', error });
+       next(error);
+        // res.status(500).json({ message: 'Error getting journal', error });
     }
 };
 

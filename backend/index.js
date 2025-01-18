@@ -45,7 +45,7 @@ app.use('/', authRoutes);
 app.use('/admin',adminRoutes);
 app.use('/user', userRoutes);
 app.use('/teacher', teacherRoutes);
-app.use(errorHandler);
+app.use(errorHandler); // всегда добавлять последним
 
 // Starting shedules
 

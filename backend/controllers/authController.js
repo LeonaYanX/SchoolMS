@@ -3,7 +3,7 @@ const sendEmail = require('../utils/emailService');// Подключение п�
 const jwtConfig = require('../config/jwt'); 
 const { generateToken, generateTokens} = require('../utils/token');
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
     
     const { firstName, lastName, role, password, email } = req.body;
     console.log('Request body:', req.body); 
@@ -28,20 +28,18 @@ exports.register = async (req, res) => {
              try {
                 await sendEmail(email, subject, text, html);
             } catch (emailError) {
+                next(emailError);
                 console.error('Failed to send email:', emailError.message);
             }
         
         res.status(201).json({ message: 'Registered successfully.A confirmation email has been sent to your address.' });
     } catch (error) {
-        
-        res.status(500).json({
-            error: 'Registration failed',
-            details: error.message,
-        });
+        next(error);
+       // res.status(500).json({error: 'Registration failed',details: error.message,});
     }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res,next) => {
     const { email, password} = req.body;
 
     try {
@@ -77,6 +75,7 @@ exports.login = async (req, res) => {
         
         res.json({ message: 'Login successful', tokens });
     } catch (error) {
-        res.status(500).json({ error: 'Login failed', details: error.message });
+        next(error);
+       // res.status(500).json({ error: 'Login failed', details: error.message });
     }
 };

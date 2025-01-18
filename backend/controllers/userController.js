@@ -4,7 +4,7 @@ const Assignment = require('../models/assignment');
 const Group = require('../models/group');
 const { uploadFile } = require('../utils/cloud'); 
 
-exports.changePassword = async (req,res)=>{
+exports.changePassword = async (req,res, next)=>{
     const {id , newPassword} = req.body;
 
     try{
@@ -28,23 +28,25 @@ exports.changePassword = async (req,res)=>{
        return res.status(200).json({message:'Password changed successfully!'});
     }
     catch(error){
-       return res.status(500).json({ message: 'An error occurred while changing the password.' });
+       next(error);
+       //return res.status(500).json({ message: 'An error occurred while changing the password.' });
     }
 };
 
 // Получить все задания для группы пользователя
-exports.getAssignments = async (req, res) => {
+exports.getAssignments = async (req, res, next) => {
     try {
         const { user } = req;
         const assignments = await Assignment.find({ group: user.group }).populate('teacher', 'firstName lastName');//понять популейт что делает
         res.status(200).json(assignments);
     } catch (error) {
-        res.status(500).json({ message: 'Error getting tasks', error });
+        next(error);
+      //res.status(500).json({ message: 'Error getting tasks', error });
     }
 };
 
 // Отправка выполненного задания
-exports.submitAssignment = async (req, res) => {
+exports.submitAssignment = async (req, res, next) => {
     try {
       const { assignmentId } = req.params;
       const { file } = req.body; // Получаем файл из запроса
@@ -71,13 +73,14 @@ exports.submitAssignment = async (req, res) => {
   
       res.status(200).json({ message: 'Test sending successfull', fileUrl });
     } catch (error) {
-      res.status(500).json({ message: 'Error sending task', error });
+      next(error);
+      //res.status(500).json({ message: 'Error sending task', error });
     }
   };
 
   
 
-  exports.getJournal = async (req, res) => {
+  exports.getJournal = async (req, res, next) => {
     try {
         const studentId = req.user._id; // ID студента из токена
         const assignments = await Assignment.find({
@@ -100,7 +103,8 @@ exports.submitAssignment = async (req, res) => {
         res.status(200).json(journal);
     } catch (error) {
         console.error('Error getting student journal:', error);
-        res.status(500).json({ message: 'Error getting student journal', error });
+        next(error);
+       // res.status(500).json({ message: 'Error getting student journal', error });
     }
 };
 

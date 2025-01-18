@@ -3,61 +3,65 @@ const Group = require('../models/group');
 const Schedule = require('../models/schedule');
 
 // 1. Создать пользователя
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
     try {
         const user = new User(req.body);
         await user.save();
         res.status(201).json({ message: 'User created successfully', user });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to create user', details: error.message });
+        next(error);
     }
 };
 
 // 2. Удалить пользователя
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         await User.findByIdAndDelete(id); // Готовый метод есть)))
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to delete user', details: error.message });
+        //res.status(400).json({ error: 'Failed to delete user', details: error.message });
+        next(error);
     }
 };
 
 // 3. Получить список пользователей
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
         res.json(users);
     } catch (error) {
-        res.status(400).json({ error: 'Failed to fetch users', details: error.message });
+        next(error);
+        //res.status(400).json({ error: 'Failed to fetch users', details: error.message });
     }
 };
 
 // 4. Обновить пользователя
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res , next) => {
     try {
         const { id } = req.params;
         const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
         res.json({ message: 'User updated successfully', updatedUser });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to update user', details: error.message });
+        //res.status(400).json({ error: 'Failed to update user', details: error.message });
+        next(error);
     }
 };
 
 // 5. Заверить пользователя
-exports.approveUser = async (req, res) => {
+exports.approveUser = async (req, res, next) => {
     try {
         const { id } = req.params; //с клика йд в парамс
         const user = await User.findByIdAndUpdate(id, { IsApproved: true }, { new: true });
         res.json({ message: 'User approved successfully', user });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to approve user', details: error.message });
+        //res.status(400).json({ error: 'Failed to approve user', details: error.message });
+        next(error);
     }
 };
 
 //5.1 Увидеть всех незаверенных пользователей
-exports.notApprovedUserList = async (req,res)=>{
+exports.notApprovedUserList = async (req,res,next)=>{
     try{
         const users= await User.find({IsApproved:false});
         if(users.length===0){
@@ -65,12 +69,13 @@ exports.notApprovedUserList = async (req,res)=>{
         }
         res.json(users);
     }catch(error){
-        res.status(500).json({error:'Failed to see the list', details: error.message});
+        next(error);
+        //res.status(500).json({error:'Failed to see the list', details: error.message});
     }
 };
 
 // 6. Заблокировать пользователя
-exports.blockUser = async (req, res) => {
+exports.blockUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { duration } = req.body; // 1 час, 1 неделя и т.д. берет из чекбокса в форме
@@ -101,12 +106,13 @@ exports.blockUser = async (req, res) => {
         );
         res.json({ message: 'User blocked successfully', blockExpiry: expiry, user });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to block user', details: error.message });
+        next(error);
+       // res.status(500).json({ error: 'Failed to block user', details: error.message });
     }
 };
 
 // 8. Создать расписание
-exports.createSchedule = async (req, res) => {
+exports.createSchedule = async (req, res, next) => {
     try {
         const { date, groupId, subject, teacherId } = req.body;
 
@@ -116,7 +122,7 @@ exports.createSchedule = async (req, res) => {
 
         const teacher = await User.findById(teacherId);
         if (!teacher || teacher.role !== 'teacher') {
-            return res.status(400).json({ error: 'Invalid teacher' });
+            return res.status(400).json({ error: 'Teacher is not found' });
         }
 
         const schedule = new Schedule({
@@ -129,47 +135,51 @@ exports.createSchedule = async (req, res) => {
         await schedule.save();
         res.status(201).json({ message: 'Schedule created successfully', schedule });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to create schedule', details: error.message });
+        next(error);
+       // res.status(400).json({ error: 'Failed to create schedule', details: error.message });
     }
 };
 
 // 9. Редактировать расписание
-exports.editSchedule = async (req, res) => {
+exports.editSchedule = async (req, res, next) => {
     try {
-        const { id } = req.params; // сделать валидацию по боди если нужно как и верхнее спросить??
+        const { id } = req.params; 
         const updatedSchedule = await Schedule.findByIdAndUpdate(id, req.body, { new: true });
         res.json({ message: 'Schedule updated successfully', updatedSchedule });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to edit schedule', details: error.message });
+        next(error);
+       // res.status(400).json({ error: 'Failed to edit schedule', details: error.message });
     }
 };
 
 // 10. Заверить расписание
-exports.approveSchedule = async (req, res) => {
+exports.approveSchedule = async (req, res, next) => {
     try {
         const { id } = req.params;
         const schedule = await Schedule.findByIdAndUpdate(id, { isApproved: true }, { new: true });
         res.json({ message: 'Schedule approved successfully', schedule });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to approve schedule', details: error.message });
+        next(error);
+        //res.status(400).json({ error: 'Failed to approve schedule', details: error.message });
     }
 };
 
 
 // 11. Создать группу
-exports.createGroup = async (req, res) => {
+exports.createGroup = async (req, res,next) => {
     try {
         const { name } = req.body; // спросить каким форматом будут задаваться группы для валидации
         const group = new Group({ name });
         await group.save();
         res.status(201).json({ message: 'Group created successfully', group });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to create group', details: error.message });
+        next(error);
+       // res.status(400).json({ error: 'Failed to create group', details: error.message });
     }
 };
 
 // 12. Прикрепить студентов к группе
-exports.addStudentsToGroup = async (req, res) => {
+exports.addStudentsToGroup = async (req, res, next) => {
     try {
         const { groupId, studentIds } = req.body;
 
@@ -186,12 +196,13 @@ exports.addStudentsToGroup = async (req, res) => {
 
         res.json({ message: 'Students added to group', group });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to add students to group', details: error.message });
+        next(error);
+        //res.status(400).json({ error: 'Failed to add students to group', details: error.message });
     }
 };
 
 // 13. Прикрепить учителей к группе
-exports.addTeachersToGroup = async (req, res) => {
+exports.addTeachersToGroup = async (req, res, next) => {
     try {
         const { groupId, teacherIds } = req.body;
 
@@ -208,12 +219,13 @@ exports.addTeachersToGroup = async (req, res) => {
 
         res.json({ message: 'Teachers added to group', group });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to add teachers to group', details: error.message });
+       next(error);
+        // res.status(400).json({ error: 'Failed to add teachers to group', details: error.message });
     }
 };
 
 // 7. Получить статистику по пользователям
-exports.getUserStatistics = async (req, res) => {
+exports.getUserStatistics = async (req, res,next) => {
     try {
         const users = await User.find();
         const statistics = users.map(user => ({
@@ -229,7 +241,8 @@ exports.getUserStatistics = async (req, res) => {
 
         res.json({ statistics });
     } catch (error) {
-        res.status(400).json({ error: 'Failed to fetch user statistics', details: error.message });
+        next(error);
+        //res.status(400).json({ error: 'Failed to fetch user statistics', details: error.message });
     }
 };
 
