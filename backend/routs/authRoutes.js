@@ -4,6 +4,7 @@ const {register,login} = require('../controllers/authController');
 
 const { validate } = require('../middlewares/validators');
 const {createUserRules} = require('../validators/userValidator');
+const { verifyToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get('/',(req,res)=>{
 
 router.post('/',login);
 
-router.post('/logout', async (req, res) => {
+router.post('/logout',verifyToken, async (req, res) => {
     const userId = req.userId; // Получаем ID пользователя 
 
     try {
