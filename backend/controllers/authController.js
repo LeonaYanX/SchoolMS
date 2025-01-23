@@ -1,7 +1,9 @@
 const User = require('../models/user');
 const sendEmail = require('../utils/emailService');// Подключение почтового модуля
-const jwtConfig = require('../config/jwt'); 
-const { generateToken, generateTokens} = require('../utils/token');
+// const jwtConfig = require('../config/jwt'); 
+const {generateTokens} = require('../utils/token');
+const {isAnExistingUser , createNewUser , findUserByEmail 
+    , refreshLastLoginDate } = require('../utils/userServices');
 
 exports.register = async (req, res, next) => {
     
@@ -10,16 +12,19 @@ exports.register = async (req, res, next) => {
     
     try {
          
-         const existingUser = await User.findOne({ email });
-         if (existingUser) {
+         const isExistingUser = await isAnExistingUser(email);
+         if (isExistingUser) {
              return res.status(400).json({ error: 'Email already in use.' });}
-        
-        const newUser = new User({ firstName, lastName, role, password, email,
-            IsPassChangeAvailable:true,
-            IsBlocked:false,
-            IsApproved:false 
-         });
-        await newUser.save();
+        const newUser = await createNewUser({firstName: firstName, lastName: lastName , role: role , 
+            password: password , email: email , IsPassChangeAvailable:true , IsBlocked: false , 
+            IsApproved:false
+        });
+       // const newUser = new User({ firstName, lastName, role, password, email,
+       //     IsPassChangeAvailable:true,
+       //     IsBlocked:false,
+       //     IsApproved:false 
+       //  });
+      //  await newUser.save();
           
              const subject = 'Registration Successful';
              const text = `Dear ${firstName},\n\nYou have successfully registered on our website. Please wait for admin approval before accessing your account.\n\nBest regards,\n${process.env.TEAM_NAME} Team`;
@@ -44,7 +49,8 @@ exports.login = async (req, res,next) => {
 
     try {
         
-        const user = await User.findOne({ email });
+        const user = await findUserByEmail(email);
+       // const user = await User.findOne({ email });
         if (!user || !(await user.comparePassword(password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -61,8 +67,9 @@ exports.login = async (req, res,next) => {
         }
         
           // Обновляем время последнего входа
-          user.lastLogin = new Date();
-          await user.save();
+         // user.lastLogin = new Date();
+         // await user.save();
+         await refreshLastLoginDate(user);
           
          const tokens = generateTokens(user._id);
        /* const token = generateToken(

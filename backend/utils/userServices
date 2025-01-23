@@ -2,6 +2,7 @@ const User = require('../models/user');
 async function createNewUser(data) {
     const user = new User(data);
     await user.save();
+    return user;
 }
 
 async function deleteUserById(id){
@@ -46,8 +47,27 @@ async function findUserWithRoleAndList(usersIdsList , role) {
     return users;
 }
 
+async function isAnExistingUser(email) {
+    const user = await User.findOne({email});
+    if (user){
+        return true;
+    }
+    return false;
+}
+
+async function findUserByEmail(email) {
+    const user = await User.findOne({email});
+    return user;
+}
+
+async function refreshLastLoginDate(user) {
+    user.lastLogin = new Date();
+    await user.save();
+}
+
 module.exports = {findUserById , blockUser , notApprovedUserList 
-    , approveUser , updateUser , getAllUsers , deleteUserById , createNewUser , findUserWithRoleAndList };
+    , approveUser , updateUser , getAllUsers , deleteUserById , createNewUser 
+    , findUserWithRoleAndList , isAnExistingUser , findUserByEmail , refreshLastLoginDate };
 
 
                      
