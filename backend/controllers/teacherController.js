@@ -1,13 +1,18 @@
-const Assignment = require('../models/assignment');
-const User = require('../models/user');
-const Group = require('../models/group');
-
+//const Assignment = require('../models/assignment');
+//const User = require('../models/user');
+//const Group = require('../models/group');
+const {findAssignmentByTeachersId , createAssignment 
+    , deleteAssignmentById , findAssignmentById 
+    , gradeAssignment , findAssignmentByTeacherIdWithInfo} = require('../utils/assignmentsService');
+const {findUserById} = require('../utils/userServices');
+const {findGroupById} = require('../utils/groupServices');
 exports.getUploadedFile = async (req, res, next) => {
     const teacherId = req.params.teacherId; // Учитель ID из параметров запроса
 
     try {
         // Находим задания, где учитель указан как `teacher`
-        const assignments = await Assignment.find({ teacher: teacherId });
+       // const assignments = await Assignment.find({ teacher: teacherId });
+       const assignments = await findAssignmentByTeachersId(teacherId);
 
         // Если задания отсутствуют
         if (assignments.length < 1) {
@@ -39,24 +44,27 @@ exports.createAssignment = async (req,res,next)=>{
        return res.status(400).json({message:'Not all fields are entered'});
     }
     const teacherId = req.params.id;
-    const teacher = await User.findById(teacherId);
+    const teacher = await findUserById(teacherId);
+   // const teacher = await User.findById(teacherId);
     if(!teacher){
       return  res.status(403).json({message : 'Cant reqognise you'});
     }
-     const group = await Group.findById(groupId);
+    const group = await findGroupById(groupId);
+    // const group = await Group.findById(groupId);
      if(!group){
        return res.status(404).json({message: 'Group is not found'});
      }
 
-     const assignment = new Assignment({
+    /* const assignment = new Assignment({
         title: title,
         description: description,
         deadline:deadline,
         group:groupId,
         teacher: teacherId
-     });
+     });*/
 
-     await assignment.save();
+    // await assignment.save();
+    const assignment = await createAssignment(title , description , deadline , groupId , teacherId);
      res.status(201).json({message:'Created successfully'}, assignment);
 
     }catch(error){
@@ -68,7 +76,8 @@ exports.createAssignment = async (req,res,next)=>{
 exports.deleteAssignment = async (req,res,next)=>{
     try{
         const assignmentId = req.params.id;
-        const assignment = await Assignment.findByIdAndDelete(assignmentId);
+        const assignment = await deleteAssignmentById(assignmentId);
+       // const assignment = await Assignment.findByIdAndDelete(assignmentId);
         if(!assignment){
             return res.status(404).json({message:'Assignment is not found.'});
         }
@@ -83,23 +92,25 @@ exports.gradeSubmission = async(req,res,next)=>{
     const {assignmentId, studentId, grade, feedback} =req.body;
     const teacherId = req.params.id;
     try{
-        const assignment = await Assignment.findById(assignmentId);
+        //const assignment = await Assignment.findById(assignmentId);
+        const assignment = await findAssignmentById(assignmentId);
         if(!assignment){
             return res.status(404).json({message:'Assignment not found'});
         }
         if(assignment.teacher.toString()!==teacherId.toString()){
             return res.status(403).json({message:'You are not allowed to grade this assignment'});
         }
-        const submission =assignment.submissions.find((sub)=>sub.student.toString()===studentId.toString());
-        if(!submission){
-            return res.status(404).json({ message: 'Submission not found for the student' });
-        }
-        submission.grade ={
-            value: grade,
-            feedback:feedback || '',
-            gradedAt: new Date()
-        }; 
-        assignment.save();
+        const submission = await gradeAssignment(assignment , studentId , grade , feedback);
+       // const submission =assignment.submissions.find((sub)=>sub.student.toString()===studentId.toString());
+      //  if(!submission){
+       //     return res.status(404).json({ message: 'Submission not found for the student' });
+       // }
+      //  submission.grade ={
+      //      value: grade,
+      //      feedback:feedback || '',
+      //      gradedAt: new Date()
+       // }; 
+       // assignment.save();
         res.status(200).json({ message: 'Grade submitted successfully', submission });
     } catch (error) {
         console.error('Error grading submission:', error);
@@ -112,9 +123,11 @@ exports.gradeSubmission = async(req,res,next)=>{
 exports.getJournal = async (req, res , next) => {
     try {
         const teacherId = req.user._id; // ID учителя из токена
-        const assignments = await Assignment.find({ teacher: teacherId })
-            .populate('group', 'name')
-            .populate('submissions.student', 'firstName lastName');
+        const assignments = await findAssignmentByTeacherIdWithInfo({teacherId});
+        
+       // const assignments = await Assignment.find({ teacher: teacherId })
+       //     .populate('group', 'name')
+       //     .populate('submissions.student', 'firstName lastName');
 
         const journal = assignments.map((assignment) => ({
             title: assignment.title,
