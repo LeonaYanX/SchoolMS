@@ -53,6 +53,28 @@ async function findAssignmentByTeacherIdWithInfo(teacherId) {
       return assignments; 
 }
 
+async function findAssignmentsByGroupWithInfo(group) {
+     const assignments = await Assignment.find({ group: group })
+            .populate('teacher', 'firstName lastName');
+            return assignments;
+}
+
+async function editSubmission(assignment , studentId , fileUrl) {
+    assignment.submissions.push({
+        student: studentId,
+        fileUrl
+    });
+    await assignment.save();
+}
+
+async function findAssignmentByStudentIdWithInfo(studentId) {
+    const assignments = await Assignment.find({
+                'submissions.student': studentId,
+            }).populate('teacher', 'firstName lastName');
+            return assignments;
+}
+
 module.exports = {findAssignmentByTeachersId , createAssignment , 
     deleteAssignmentById , findAssignmentById , gradeAssignment
-    ,findAssignmentByTeacherIdWithInfo};
+    ,findAssignmentByTeacherIdWithInfo , findAssignmentsByGroupWithInfo 
+    , editSubmission , findAssignmentByStudentIdWithInfo};
