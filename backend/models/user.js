@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['student', 'teacher','admin'], 
         required: true,
+        index: true
     },
     email: {
         type: String,
@@ -37,10 +38,12 @@ const userSchema = new mongoose.Schema({
     IsBlocked: {
         type: Boolean,
         default: false,
+        index:true
     },
     IsApproved:{
         type:Boolean,
         default:false,
+        index: true
     },
     blockExpiry: {
         type:Date,    
@@ -55,6 +58,12 @@ const userSchema = new mongoose.Schema({
     } // Поле для записи длительности нахождения (в минутах)
 
 });
+ 
+//indexed 
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ IsApproved: 1 });
+userSchema.index({ IsBlocked: 1 });
 
 // Хешируем пароль перед сохранением
 userSchema.pre('save', async function (next) {
