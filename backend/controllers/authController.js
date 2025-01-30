@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const sendEmail = require('../utils/emailService');// Подключение почтового модуля
+const sendEmail = require('../utils/emailService');// Connecting the email Service
 // const jwtConfig = require('../config/jwt'); 
 const {generateTokens} = require('../utils/token');
 const {isAnExistingUser , createNewUser , findUserByEmail 
@@ -60,13 +60,13 @@ exports.login = async (req, res,next) => {
 
           
         if (user.IsBlocked) {
-            await user.checkAndUnblock(); // Проверяем срок блокировки
-            if (user.IsBlocked) { // Если всё ещё заблокирован
+            await user.checkAndUnblock(); // Checking if the User blocked and unblocking if needed
+            if (user.IsBlocked) { 
                 return res.status(403).json({ error: 'Your account is blocked by the administration.' });
             }
         }
         
-          // Обновляем время последнего входа
+          // Updating the last login time
          // user.lastLogin = new Date();
          // await user.save();
          await refreshLastLoginDate(user);

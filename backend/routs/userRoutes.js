@@ -16,7 +16,7 @@ router.get('/assignments',roleMiddleware('student'),  userController.getAssignme
 
 router.post('/assignments/:assignmentId/submit',roleMiddleware('student'),  userController.submitAssignment);
 
-router.get('/getJournal',userController.getJournal); // tk. id is tokena
+router.get('/getJournal',userController.getJournal); //  id is taken from the token , it is not in routes
 
 
 module.exports=router;

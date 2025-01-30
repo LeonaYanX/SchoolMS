@@ -7,29 +7,29 @@ const {findAssignmentByTeachersId , createAssignment
 const {findUserById} = require('../utils/userServices');
 const {findGroupById} = require('../utils/groupServices');
 exports.getUploadedFile = async (req, res, next) => {
-    const teacherId = req.params.teacherId; // Учитель ID из параметров запроса
+    const teacherId = req.params.teacherId; // Taking teachers ID from request params
 
     try {
-        // Находим задания, где учитель указан как `teacher`
+        // Finding assignment where this teacher is specified.
        // const assignments = await Assignment.find({ teacher: teacherId });
        const assignments = await findAssignmentByTeachersId(teacherId);
 
-        // Если задания отсутствуют
+        // If there is no assignments
         if (assignments.length < 1) {
             return res.status(200).json({ message: 'There are no tasks at this moment.' });
         }
 
-        // Извлекаем все submissions из всех заданий
+        // Taking all the submissions from assignments
         const submissions = assignments
-            .map(assignment => assignment.submissions) // Получаем массив `submissions` из каждого задания
-            .flat();                                   // "Сплющиваем" в единый массив
+            .map(assignment => assignment.submissions) // We have an array of `submissions` 
+            .flat();                                   // "Flattening" into a single array
 
-        // Если сабмишнов нет
+        
         if (submissions.length < 1) {
             return res.status(200).json({ message: 'There are no submissions yet.' });
         }
 
-        // Возвращаем сабмишны
+        
         res.status(200).json(submissions);
     } catch (error) {
         console.error('Error getting uploaded files:', error);

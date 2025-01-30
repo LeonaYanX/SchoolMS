@@ -13,7 +13,7 @@ const router = express.Router();
 router.use(verifyToken, refreshToken);
 router.use(roleMiddleware('admin'));
 
-// Пользователи
+// Users
 router.post('/users', createUser,createUserRules, validate);
 router.delete('/users/:id', deleteUser);
 router.get('/users', getAllUsers);
@@ -22,15 +22,15 @@ router.get('/users/notapproved', notApprovedUserList );
 router.patch('/users/:id/approve', approveUser);  // посмотреть что такое патч
 router.patch('/users/:id/block', blockUser);
 
-// Статистика
+// Statistics
 router.get('/statistics', getUserStatistics);
 
-// Группы
+// Groups
 router.post('/groups', createGroup , createGroupRules , validate );
 router.patch('/groups/:id/students', addStudentsToGroup);
 router.patch('/groups/:id/teachers', addTeachersToGroup);
 
-// Расписание
+// Schedule
 router.post('/schedules', createSchedule , createScheduleRules , validate); 
 router.put('/schedules/:id', editSchedule , createScheduleRules , validate);
 router.patch('/schedules/:id/approve', approveSchedule);

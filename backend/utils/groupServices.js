@@ -15,7 +15,7 @@
          
                  group.teachers.push(...teacherIds);
                  await group.save();
-                 return group; //todo find out is this return needed
+                 return group; 
                  
  }
 
@@ -23,7 +23,7 @@ async function addStudentToGroup(group,studentIds) {
 
      group.students.push(...studentIds);
      await group.save();
-     return group //todo same here
+     return group 
         }
 
 module.exports={findGroupById , createNewGroup , addTeachersToGroup: addTeacherToGroup , addStudentsToGroup: addStudentToGroup };

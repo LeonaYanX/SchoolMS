@@ -2,7 +2,7 @@ const { body } = require('express-validator');
 
 const { body } = require('express-validator');
 
-// Массив доступных предметов
+// Array of subjects
 const validSubjects = ['Math', 'Science', 'History', 'English', 'Physics', 'Chemistry'];
 
 const createSheduleRules = [

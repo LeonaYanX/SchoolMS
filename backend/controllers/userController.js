@@ -39,7 +39,7 @@ exports.changePassword = async (req,res, next)=>{
     }
 };
 
-// Получить все задания для группы пользователя
+// Get all the assignments for Users Group
 exports.getAssignments = async (req, res, next) => {
     try {
         const { user } = req;
@@ -53,11 +53,11 @@ exports.getAssignments = async (req, res, next) => {
     }
 };
 
-// Отправка выполненного задания
+// Submit the Assignment
 exports.submitAssignment = async (req, res, next) => {
     try {
       const { assignmentId } = req.params;
-      const { file } = req.body; // Получаем файл из запроса
+      const { file } = req.body; // getting file from the request
   
       if (!file) {
         return res.status(400).json({ message: 'File is required' });
@@ -70,10 +70,10 @@ exports.submitAssignment = async (req, res, next) => {
         return res.status(404).json({ message: 'Task is not found' });
       }
   
-      // Загрузка файла в облако
+      // Uploading the file to the cloud storagge
       const fileUrl = await uploadFile(file);
   
-      // Добавление записи в submissions
+      // Editing the submission
       await editSubmission(assignment , req.user._id , fileUrl);
       //assignment.submissions.push({
       //  student: req.user._id,

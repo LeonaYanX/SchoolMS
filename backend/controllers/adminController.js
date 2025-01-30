@@ -9,7 +9,7 @@ const {approveSchedule , editSchedule , createNewSchedule} = require('../utils/s
 //const Schedule = require('../models/schedule');
 
 
-// 1. Создать пользователя
+// 1. Create User
 exports.createUser = async (req, res, next) => {
     try {
         //const user = new User(req.body);
@@ -21,7 +21,7 @@ exports.createUser = async (req, res, next) => {
     }
 };
 
-// 2. Удалить пользователя
+// 2. Delete User
 exports.deleteUser = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -34,7 +34,7 @@ exports.deleteUser = async (req, res, next) => {
     }
 };
 
-// 3. Получить список пользователей
+// 3. Get the Users list
 exports.getAllUsers = async (req, res, next) => {
     try {
        // const users = await User.find();
@@ -46,7 +46,7 @@ exports.getAllUsers = async (req, res, next) => {
     }
 };
 
-// 4. Обновить пользователя
+// 4. Update User
 exports.updateUser = async (req, res , next) => {
     try {
         const { id } = req.params;
@@ -59,7 +59,7 @@ exports.updateUser = async (req, res , next) => {
     }
 };
 
-// 5. Заверить пользователя
+// 5. Approve User
 exports.approveUser = async (req, res, next) => {
     try {
         const { id } = req.params; 
@@ -72,8 +72,8 @@ exports.approveUser = async (req, res, next) => {
     }
 };
 
-//5.1 Увидеть всех незаверенных пользователей
-exports.notApprovedUserList = async (req,res,next)=>{
+//5.1 All not approved Users list
+exports.notApprovedUserList = async (res,next)=>{
     try{
         const users = await notApprovedUserList();
         //const users= await User.find({IsApproved:false});
@@ -87,11 +87,11 @@ exports.notApprovedUserList = async (req,res,next)=>{
     }
 };
 
-// 6. Заблокировать пользователя
+// 6. Block User
 exports.blockUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { duration } = req.body; // 1 час, 1 неделя и т.д. берет из чекбокса в форме
+        const { duration } = req.body; // 1 hour, 1 week ... will get it form the checkbox in the form
         const expiry = new Date();
 
         switch (duration) {
@@ -104,7 +104,7 @@ exports.blockUser = async (req, res, next) => {
             case '1m':
                 expiry.setMonth(expiry.getMonth() + 1);
                 break;
-            case 'forever':// может поменять только в апдейте
+            case 'forever'://Can be changed only by updating 
                 expiry.setFullYear(9999);
                 break;
             default:
@@ -120,12 +120,12 @@ exports.blockUser = async (req, res, next) => {
     }
 };
 
-// 8. Создать расписание
+// 8. Create a Schedule
 exports.createSchedule = async (req, res, next) => {
     try {
         const { date, groupId, subject, teacherId } = req.body;
 
-        // Проверяем существование группы и учителя
+        // Checking the existence of the group and teacher
        // const group = await Group.findById(groupId);
        const group = await findGroupById(groupId);
         if (!group) return res.status(404).json({ error: 'Group not found' });
@@ -147,7 +147,7 @@ exports.createSchedule = async (req, res, next) => {
     }
 };
 
-// 9. Редактировать расписание
+// 9. Edit Schedule
 exports.editSchedule = async (req, res, next) => {
     try {
         const { id } = req.params; 
@@ -160,7 +160,7 @@ exports.editSchedule = async (req, res, next) => {
     }
 };
 
-// 10. Заверить расписание
+// 10. Approve Schedule
 exports.approveSchedule = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -174,10 +174,10 @@ exports.approveSchedule = async (req, res, next) => {
 };
 
 
-// 11. Создать группу
+// 11. Create a Group
 exports.createGroup = async (req, res,next) => {
     try {
-        const { name } = req.body; // спросить каким форматом будут задаваться группы для валидации
+        const { name } = req.body; 
         const group = await createNewGroup(name);
        // const group = new Group({ name });
        // await group.save();
@@ -188,7 +188,7 @@ exports.createGroup = async (req, res,next) => {
     }
 };
 
-// 12. Прикрепить студентов к группе
+// 12. Add students to the Group
 exports.addStudentsToGroup = async (req, res, next) => {
     try {
         const { groupId, studentIds } = req.body;
@@ -196,8 +196,8 @@ exports.addStudentsToGroup = async (req, res, next) => {
        // const group = await Group.findById(groupId);
         if (!group) return res.status(404).json({ error: 'Group not found' });
      const students = await findUserWithRoleAndList(studentIds, 'student');
-      //  const students = await User.find({ _id: { $in: studentIds }, role: 'student' }); //Обяснить строку
-       if (students.length !== studentIds.length) {                                     //И поменять на имя?
+      //  const students = await User.find({ _id: { $in: studentIds }, role: 'student' }); 
+       if (students.length !== studentIds.length) {                                     
           return res.status(400).json({ error: 'Some students not found' });
         }
       await addStudentToGroup(group , studentIds);
@@ -211,7 +211,7 @@ exports.addStudentsToGroup = async (req, res, next) => {
     }
 };
 
-// 13. Прикрепить учителей к группе
+// 13. Add teachers to the Group
 exports.addTeachersToGroup = async (req, res, next) => {
     try {
         const { groupId, teacherIds } = req.body;
@@ -235,7 +235,7 @@ exports.addTeachersToGroup = async (req, res, next) => {
     }
 };
 
-// 7. Получить статистику по пользователям
+// 7. Get User Statistics
 exports.getUserStatistics = async (req, res,next) => {
     try {
         const users = await getAllUsers();
@@ -248,7 +248,7 @@ exports.getUserStatistics = async (req, res,next) => {
                 role: user.role,
             },
             lastEnteringDate: user.lastEnteringDate || 'Never',
-            duration: user.duration || 'N/A', // Logic in logut in routes
+            duration: user.duration || 'N/A', // Logic of logut is in the routes
         }));
 
         res.json({ statistics });

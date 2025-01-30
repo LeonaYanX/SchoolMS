@@ -21,23 +21,22 @@ app.use(bodyParser.json());
 
 
   
-  app.use(cors(corsOptions)); // для всего приложения
+  app.use(cors(corsOptions)); // using cors for all app
 
-const hbs = expHbs.create({ // настройка ХБС
-    defaultLayout:'main',    // главный лейаут мейн
-    extname:'hbs'      // разширение ХБС
+const hbs = expHbs.create({ // HBS settings
+    defaultLayout:'main',    // main layout is "main"
+    extname:'hbs'      //.hbs
 })
-app.engine('hbs',hbs.engine) // подключаем движок по ключу ХБС
-app.set('view engine', 'hbs')//Для того чтобы по дефолту использовать ХБС настройка имя должно 
-// совпадать с строчкой в апп.энджин 
-app.set('views','views') // Настраиваю место где будет находиться вю нашего приложения по ключу views
+app.engine('hbs',hbs.engine) // Connecting the engine using the key hbs
+app.set('view engine', 'hbs')// To use HBS by default, the setting name must match the string in app.engine
+app.set('views','views') // Configuring the location where the views of our application will be located using the key views
 
 
 
 //Connect to DB
 connectDB().catch(err => {
     console.error('Failed to connect to MongoDB:', err);
-    process.exit(1);                                    // Завершаем процесс при ошибке подключения
+    process.exit(1);                                    // exit the process if connection is failed
 });;
 
 // Routes
@@ -45,7 +44,7 @@ app.use('/', authRoutes);
 app.use('/admin',adminRoutes);
 app.use('/user', userRoutes);
 app.use('/teacher', teacherRoutes);
-app.use(errorHandler); // всегда добавлять последним
+app.use(errorHandler); // Always add it last
 
 // Starting shedules
 

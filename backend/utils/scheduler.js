@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const User = require('../models/user');
 
 
-// планировщик для обновления поля
+// Scheduler for IsPassChangAvailable field
 const schedulePasswordUpdate = () => {
   cron.schedule('0 0 * * *', async () => {
     console.log('Running password update job...');
@@ -10,13 +10,13 @@ const schedulePasswordUpdate = () => {
       const oneMonthAgo = new Date();
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-      // Найти пользователей, которые не могут менять пароль больше месяца
+      // Finding Useres that can't change their pass for more than a month
       const users = await User.find({
         IsPassChangeAvailable: false,
         passwordLastChangedAt: { $lte: oneMonthAgo },
       });
 
-      // Обновить пользователей
+      // Update Users
       for (const user of users) {
         user.IsPassChangeAvailable = true;
         await user.save();
@@ -29,16 +29,16 @@ const schedulePasswordUpdate = () => {
   });
 };
 
-// Планировщик checkAndUnblock для всех пользователей
+// Scheduler checkAndUnblock for all Users
 const scheduleUnblockUsers = () => {
-    cron.schedule('0 * * * *', async () => { // Запуск каждый час
+    cron.schedule('0 * * * *', async () => { // Starting every hour
       console.log('Running unblock task...');
       try {
-        // Найти всех заблокированных пользователей
+        // finding all blocked Users
         const blockedUsers = await User.find({ IsBlocked: true, blockExpiry: { $lte: new Date() } });
   
         for (const user of blockedUsers) {
-          await user.checkAndUnblock(); // Вызов метода checkAndUnblock
+          await user.checkAndUnblock(); 
         }
   
         console.log(`Processed ${blockedUsers.length} blocked users.`);

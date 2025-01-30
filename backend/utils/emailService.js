@@ -4,11 +4,11 @@ const transporter = require('../config/mail');
 
 const sendEmail = async (to, subject, text, html) => {
     const mailOptions = {
-        from: `"SchoolMS" <${process.env.EMAIL_USER}>`, // Адрес отправителя
-        to, // Кому отправить
-        subject, // Тема письма
-        text, // Текстовое содержимое письма
-        html, // HTML-содержимое письма
+        from: `"SchoolMS" <${process.env.EMAIL_USER}>`, // Sender's adress
+        to, // Reciever adress
+        subject, 
+        text, 
+        html,
     };
 
     try {

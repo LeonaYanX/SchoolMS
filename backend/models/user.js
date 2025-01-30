@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const cron = require('node-cron');
+//const cron = require('node-cron');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -58,11 +58,11 @@ const userSchema = new mongoose.Schema({
     lastLogin: {
          type: Date, 
          default: null 
-    }, // Поле для записи времени последнего логина
+    }, // last login time 
     duration: {
          type: Number, 
          default: 0 
-    } // Поле для записи длительности нахождения (в минутах)
+    } // duration in minutes
 
 });
  
@@ -72,19 +72,20 @@ userSchema.index({ role: 1 });
 userSchema.index({ IsApproved: 1 });
 userSchema.index({ IsBlocked: 1 });
 
-// Хешируем пароль перед сохранением
+
+// Hashing the password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     this.password = await bcrypt.hash(this.password, 10);
     next();
 });
 
-// Сравнение пароля
+// Comparing the password
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Проверка истечения срока блокировки
+// Checking the expiration of blocking period
 userSchema.methods.checkAndUnblock = async function () {
     try {
       if (this.IsBlocked && this.blockExpiry && new Date() > this.blockExpiry) {

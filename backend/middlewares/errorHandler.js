@@ -1,20 +1,20 @@
-// Обработчик ошибок для централизованного логирования и отправки ответов
+// Error handler for centralized logging and sending responses
 const errorHandler = (err, req, res, next) => {
     
-        // Определяем статус ошибки (по умолчанию 500)
+        // Determining the error status (default is 500)
         const status = err.status || 500;
     
-        // Формат стандартизированного ответа
+        // Standardized response format
         const errorResponse = {
             status: status,
             error: err.name || 'ServerError',
             message: err.message || 'An internal server error occurred'
         };
     
-        // Логируем ошибку
+        // Error logging
         console.error(`[ERROR] ${err.name}: ${err.message}`);
     
-        // Проверяем типы ошибок и уточняем ответ
+        // Checking Error types and specifying the response 
         if (err.name === 'ValidationError') {
             errorResponse.status = 400;
             errorResponse.message = 'Validation failed for the provided input.';

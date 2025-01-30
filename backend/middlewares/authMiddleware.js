@@ -19,7 +19,7 @@ exports.verifyToken = (req,res,next)=>{
 };
 
 
-// Функция для обновления токена (если нужно продлить срок действия)
+// token update function (If we need to extend the deadline)
 
 exports.refreshToken = async (refreshT)=>{
     try{
@@ -34,14 +34,14 @@ exports.refreshToken = async (refreshT)=>{
     }
 };
 //exports.refreshToken = async (token, newExpiresIn = '1h') => {
- //   const payload = verifyToken(token); // Вытаскиваем данные из старого токена
+ //   const payload = verifyToken(token); // getting data from the old token
  //   try{
  //   const user = await User.findById(payload.id);
  //   if(!user || user.IsBlocked)
  //   {
  //      throw new Error('User access revoked');
  //   }
-                /* delete payload.iat; // Удаляем метаданные старого токена
+                /* delete payload.iat; // deleting metas of the old token
                    delete payload.exp;*/
   //  return generateToken(
   //      {

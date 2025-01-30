@@ -26,7 +26,7 @@ router.get('/',(req,res)=>{
 router.post('/',login);
 
 router.post('/logout',verifyToken, async (req, res) => {
-    const userId = req.userId; // Получаем ID пользователя 
+    const userId = req.userId; 
 
     try {
         const user = await User.findById(userId);
@@ -34,10 +34,10 @@ router.post('/logout',verifyToken, async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Рассчитываем длительность нахождения на сайте
+        // Calculating the duration of time spent on the site
         if (user.lastLogin) {
             const now = new Date();
-            const duration = Math.floor((now - user.lastLogin) / (1000 * 60)); // В минутах
+            const duration = Math.floor((now - user.lastLogin) / (1000 * 60)); // In minutes
             user.duration = duration;
             await user.save();
             console.log(`User ${user.email} spent ${duration} minutes on the site.`);

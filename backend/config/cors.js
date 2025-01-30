@@ -1,7 +1,7 @@
-//Настройка CORS  
+//CORS Settings 
 const corsOptions = {
-    origin: ['https://trusted-domain.com', 'https://another-trusted.com'], // Доверенные домены
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Разрешённые методы
+    origin: ['https://trusted-domain.com', 'https://another-trusted.com'], // Trusted domains
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
     allowedHeaders: [
         'Content-Type',
         'Authorization',
@@ -10,7 +10,7 @@ const corsOptions = {
         'X-Requested-With',
         'Referrer-Policy',
         'X-Frame-Options',
-        'X-Debug-Info'], // Разрешённые заголовки
-    credentials: true, // Если нужно отправлять cookie
+        'X-Debug-Info'], // Allowed headers
+    credentials: true, //If we need to send cookies
   };
   module.exports = corsOptions;

@@ -2,17 +2,17 @@ const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv');
 
 
-// Загружаем переменные окружения
+// Loading environment variables
 dotenv.config();
 
-// Конфигурация Cloudinary
+// Configurating Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,  // ponyat `to za polya
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Функция загрузки файла
+// Upload func
 const uploadFile = async (filePath) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
