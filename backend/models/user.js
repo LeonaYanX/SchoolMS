@@ -6,10 +6,16 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        minlength: [2, "First name must contain at least 2 characters."],
+        maxlength: [30, "First name must contain a maximum of 50 characters"],
+        match: [/^[a-zA-Z\s]+$/, "First name must contain only letters and spaces."]
     },
     lastName: {
         type: String,
         required: true,
+        minlength: [2, "Last name must contain at least 2 characters."],
+        maxlength: [30, "Last name must contain a maximum of 50 characters"],
+        match: [/^[a-zA-Z\s]+$/, "Last name must contain only letters and spaces."],
     },
     role: {
         type: String,
@@ -46,7 +52,8 @@ const userSchema = new mongoose.Schema({
         index: true
     },
     blockExpiry: {
-        type:Date,    
+        type:Date,
+        required: true    
     },
     lastLogin: {
          type: Date, 
