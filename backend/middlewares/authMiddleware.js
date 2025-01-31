@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwt');
-const User = require('../models/user');
-const generateTokens = require('../utils');
+//const User = require('../models/user');
+const generateTokens = require('../utils/token');
 const RefreshToken = require('../models/refreshToken');
 exports.verifyToken = (req,res,next)=>{
     const token = req.headers['authorization']?.split(' ')[1]; 

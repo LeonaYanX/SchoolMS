@@ -1,7 +1,5 @@
 const { body } = require('express-validator');
 
-const { body } = require('express-validator');
-
 // Array of subjects
 const validSubjects = ['Math', 'Science', 'History', 'English', 'Physics', 'Chemistry'];
 

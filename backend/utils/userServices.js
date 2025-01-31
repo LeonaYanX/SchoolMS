@@ -1,13 +1,19 @@
 const User = require('../models/user');
-async function createNewUser(data) {
-    const user = new User(data);
+async function createNewUser(firstName , lastName , role , email , password) {
+    const user = new User({
+        firstName: firstName,
+        lastName: lastName , 
+        role: role,
+        email: email,
+        password: password
+    });
     await user.save();
     return user;
 }
 
 async function deleteUserById(id){
-    await User.findByIdAndDelete(id);
-
+  const user =   await User.findByIdAndDelete(id);
+ return user;
 }
 
 async function getAllUsers(){

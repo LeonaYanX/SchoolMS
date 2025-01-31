@@ -3,7 +3,7 @@ const router = express.Router();
 const teacherController = require('../controllers/teacherController');
 const { verifyToken,refreshToken } = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
-const { createAssignmentRules } = require('../validators/assignmentValidator');
+const assignmentValidator  = require('../validators/assignmentValidator');
 const validate = require('../middlewares/validators');
 
 router.use(roleMiddleware('teacher'));
@@ -11,7 +11,7 @@ router.use(verifyToken,refreshToken);
 
 router.get('/getUploadedFile',  teacherController.getUploadedFile);
 
-router.post('/createAssignment/:id',createAssignmentRules,validate,teacherController.createAssignment);
+router.post('/createAssignment/:id',assignmentValidator.createAssignmentRules,validate.validate,teacherController.createAssignment);
 
 router.delete('/deleteAssignment/:id',teacherController.deleteAssignment);
 

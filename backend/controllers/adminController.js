@@ -14,8 +14,9 @@ exports.createUser = async (req, res, next) => {
     try {
         //const user = new User(req.body);
        // await user.save();
-      await createNewUser(req.body);
-        res.status(201).json({ message: 'User created successfully', user });
+      const {firstName , lastName , role , email ,password} = req.body;
+      await createNewUser(firstName , lastName , role , email , password);
+        res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
         next(error);
     }
@@ -73,7 +74,7 @@ exports.approveUser = async (req, res, next) => {
 };
 
 //5.1 All not approved Users list
-exports.notApprovedUserList = async (res,next)=>{
+exports.notApprovedUserList = async (req , res,next)=>{
     try{
         const users = await notApprovedUserList();
         //const users= await User.find({IsApproved:false});

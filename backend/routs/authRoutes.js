@@ -10,18 +10,18 @@ const router = express.Router();
 
 
 
-router.get('/register',createUserRules,validate,(req,res)=>{
+/*router.get('/register',createUserRules,validate,(req,res)=>{
     res.render('register',{
         title:'Registration'
     });
-});
-router.post('/register', validateRegister, register);
+});*/
+router.post('/register',createUserRules, validate, register);
 
-router.get('/',(req,res)=>{
+/*router.get('/',(req,res)=>{
     res.render('index',{
         title:'Home'
     });
-});
+});*/
 
 router.post('/',login);
 

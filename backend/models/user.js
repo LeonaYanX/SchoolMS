@@ -67,10 +67,10 @@ const userSchema = new mongoose.Schema({
 });
  
 //indexed 
-userSchema.index({ email: 1 });
-userSchema.index({ role: 1 });
-userSchema.index({ IsApproved: 1 });
-userSchema.index({ IsBlocked: 1 });
+
+//userSchema.index({ role: 1 });
+//userSchema.index({ IsApproved: 1 });
+//userSchema.index({ IsBlocked: 1 });
 
 
 // Hashing the password before saving

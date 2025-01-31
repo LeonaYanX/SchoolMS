@@ -4,13 +4,13 @@ const express = require('express');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const corsOptions = require('./config/cors');
-const expHbs = require('express-handlebars');
+//const expHbs = require('express-handlebars');
 const userRoutes = require('./routs/userRoutes');
 const authRoutes = require('./routs/authRoutes');
 const adminRoutes = require('./routs/adminRoutes');
 const teacherRoutes = require('./routs/teacherRouts');
 const errorHandler = require('./middlewares/errorHandler');
-
+const swaggerSetup = require('./config/swagger');
 
 const {schedulePasswordUpdate, scheduleUnblockUsers} = require('./utils/scheduler');
 
@@ -19,19 +19,10 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
+// Подключение Swagger
+  swaggerSetup(app);
   
   app.use(cors(corsOptions)); // using cors for all app
-
-const hbs = expHbs.create({ // HBS settings
-    defaultLayout:'main',    // main layout is "main"
-    extname:'hbs'      //.hbs
-})
-app.engine('hbs',hbs.engine) // Connecting the engine using the key hbs
-app.set('view engine', 'hbs')// To use HBS by default, the setting name must match the string in app.engine
-app.set('views','views') // Configuring the location where the views of our application will be located using the key views
-
-
 
 //Connect to DB
 connectDB().catch(err => {
