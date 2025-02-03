@@ -10,7 +10,7 @@ const authRoutes = require('./routs/authRoutes');
 const adminRoutes = require('./routs/adminRoutes');
 const teacherRoutes = require('./routs/teacherRouts');
 const errorHandler = require('./middlewares/errorHandler');
-const swaggerSetup = require('./config/swagger');
+const swaggerSetup = require('./config/swaggerSetup');
 
 const {schedulePasswordUpdate, scheduleUnblockUsers} = require('./utils/scheduler');
 

@@ -1,4 +1,4 @@
-const swaggerJSDoc = require('swagger-jsdoc');
+/*const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const swaggerDefinition = {
@@ -34,3 +34,26 @@ console.log('Swagger spec:', swaggerSpec);
 module.exports = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
+*/
+
+const swaggerAutogen = require('swagger-autogen')();
+
+const doc = {
+    info: {
+        title: 'School Management API',
+        description: 'API documentation for School Management System',
+    },
+    host: `localhost:${process.env.PORT}`, 
+    schemes: ['http' , 'https'], 
+};
+
+const outputFile = '../swagger_output.json'; // File to save generated documentation 
+const endpointsFiles = ['../index.js', '../routs/userRoutes.js',
+   '../routs/authRoutes.js', '../routs/adminRoutes.js',
+    '../routs/teacherRouts.js']; // route files
+
+swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
+    console.log('Swagger JSON сгенерирован!');
+});
+
+
