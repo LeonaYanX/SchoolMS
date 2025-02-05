@@ -1,7 +1,7 @@
 const Assignment = require('../models/assignment');
 
 async function findAssignmentByTeachersId(teacherId) {
-    const assignment = Assignment.find({teacher : teacherId});
+    const assignment = await Assignment.find({teacher : teacherId});
     return assignment;
 }
 
@@ -37,10 +37,10 @@ async function gradeAssignment (assignment , studentId , grade , feedback) {
         }
         submission.grade ={
             value: grade,
-            feedback:typeof(feedback)===undefined?'':feedback ,
+            feedback:feedback??'' ,
             gradedAt: new Date()
         }; 
-        assignment.save();
+        await assignment.save();
 
         return submission;
 }
@@ -65,6 +65,7 @@ async function editSubmission(assignment , studentId , fileUrl) {
         fileUrl
     });
     await assignment.save();
+    return assignment;
 }
 
 async function findAssignmentByStudentIdWithInfo(studentId) {

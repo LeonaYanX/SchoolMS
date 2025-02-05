@@ -9,8 +9,17 @@ const schedulePasswordUpdate = () => {
     try {
       const oneMonthAgo = new Date();
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+     // Updating all users 
+      const users = await User.updateMany(
+      {
+         IsPassChangeAvailable: false,
+         passwordLastChangedAt: { $lte: oneMonthAgo },
+      },
+      { $set: { IsPassChangeAvailable: true } }
+    );
 
-      // Finding Useres that can't change their pass for more than a month
+   console.log(`Updated ${users.modifiedCount} users to allow password change.`);
+      /*// Finding Useres that can't change their pass for more than a month
       const users = await User.find({
         IsPassChangeAvailable: false,
         passwordLastChangedAt: { $lte: oneMonthAgo },
@@ -22,7 +31,7 @@ const schedulePasswordUpdate = () => {
         await user.save();
       }
 
-      console.log(`Updated ${users.length} users to allow password change.`);
+      console.log(`Updated ${users.length} users to allow password change.`);*/
     } catch (error) {
       console.error('Error updating users:', error);
     }
@@ -34,13 +43,9 @@ const scheduleUnblockUsers = () => {
     cron.schedule('0 * * * *', async () => { // Starting every hour
       console.log('Running unblock task...');
       try {
-        // finding all blocked Users
-        const blockedUsers = await User.find({ IsBlocked: true, blockExpiry: { $lte: new Date() } });
-  
-        for (const user of blockedUsers) {
-          await user.checkAndUnblock(); 
-        }
-  
+        // finding all blocked Users and unblocking
+        const blockedUsers = await User.find({ IsBlocked: true, blockExpiry: { $lte: new Date() } },
+      {$set: {IsBlocked:false}});
         console.log(`Processed ${blockedUsers.length} blocked users.`);
       } catch (error) {
         console.error('Error during scheduled unblock:', error);

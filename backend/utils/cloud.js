@@ -16,9 +16,9 @@ cloudinary.config({
 const uploadFile = async (filePath) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'assignments', // Папка в Cloudinary
+      folder: 'assignments', // folder in Cloudinary
     });
-    return result.url; // Ссылка на загруженный файл
+    return result.secure_url; // link to uploaded file https
   } catch (error) {
     throw new Error('Error sending file: ' + error.message);
   }
