@@ -4,7 +4,7 @@ const { verifyToken ,refreshToken} = require('../middlewares/authMiddleware');
  //    approveUser, blockUser, getUserStatistics, createGroup,
  //     addStudentsToGroup, addTeachersToGroup, notApprovedUserList , 
  //     createSchedule, editSchedule, approveSchedule } = require('../controllers/adminController');
- const adminController = require('../controllers/adminController');
+ const adminController = require('../controllers/admin_controller');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const userValidator = require('../validators/userValidator');
 const scheduleValidator = require('../validators/sheduleValidator');

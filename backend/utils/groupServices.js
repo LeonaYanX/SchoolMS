@@ -26,7 +26,7 @@ async function addStudentToGroup(group,studentIds) {
      return group 
         }
 
-module.exports={findGroupById , createNewGroup , addTeachersToGroup: addTeacherToGroup , addStudentsToGroup: addStudentToGroup };
+module.exports={findGroupById , createNewGroup , addTeacherToGroup, addStudentToGroup };
          
                  
          
