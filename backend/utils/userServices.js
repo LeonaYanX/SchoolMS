@@ -54,11 +54,12 @@ async function findUserWithRoleAndList(usersIdsList , role) {
 }
 
 async function isAnExistingUser(email) {
-    const user = await User.findOne({email});
+   /* const user = await User.findOne({email});
     if (user){
         return true;
     }
-    return false;
+    return false;*/
+    return await User.exists({email});
 }
 
 async function findUserByEmail(email) {

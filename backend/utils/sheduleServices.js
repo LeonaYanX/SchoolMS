@@ -15,8 +15,8 @@ async function createNewSchedule(date,groupId,subject,teacherId){
 
    
        async function editSchedule(id,data) {
-        const updatedSchedule = await Schedule.findByIdAndUpdate(id, data , { new: true });
-        return updatedSchedule;
+        
+        return await Schedule.findByIdAndUpdate(id, data , { new: true });;
         
        } 
        async function approveSchedule(id) {
